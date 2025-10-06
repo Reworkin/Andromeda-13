@@ -7340,8 +7340,6 @@
 #include "modular_skyrat\modules\alt_vox\code\vox_procs.dm"
 #include "modular_skyrat\modules\alt_vox\code\vox_sounds_bms.dm"
 #include "modular_skyrat\modules\alt_vox\code\vox_sounds_hl1.dm"
-#include "modular_skyrat\modules\alternative_job_titles\code\alt_job_titles.dm"
-#include "modular_skyrat\modules\alternative_job_titles\code\job.dm"
 #include "modular_skyrat\modules\apc_arcing\code\apc.dm"
 #include "modular_skyrat\modules\armaments\code\armament_component.dm"
 #include "modular_skyrat\modules\armaments\code\armament_entries.dm"
@@ -8678,7 +8676,6 @@
 #include "modular_skyrat\modules\science_tools\research.dm"
 #include "modular_skyrat\modules\science_tools\tool_designs.dm"
 #include "modular_skyrat\modules\science_tools\tools.dm"
-#include "modular_skyrat\modules\sec_haul\code\corrections_officer\corrections_officer.dm"
 #include "modular_skyrat\modules\sec_haul\code\corrections_officer\corrections_officer_equipment.dm"
 #include "modular_skyrat\modules\sec_haul\code\corrections_officer\landmarks.dm"
 #include "modular_skyrat\modules\sec_haul\code\guns\ammo.dm"
@@ -9151,7 +9148,6 @@
 #include "modular_zubbers\code\modules\admin\verbs\admin.dm"
 #include "modular_zubbers\code\modules\admin\verbs\debug.dm"
 #include "modular_zubbers\code\modules\alt_anomaly_refinery\anomaly_refinery.dm"
-#include "modular_zubbers\code\modules\alternative_job_titles\code\alt_job_titles.dm"
 #include "modular_zubbers\code\modules\antagonists\modglue.dm"
 #include "modular_zubbers\code\modules\antagonists\_common\antag_datum.dm"
 #include "modular_zubbers\code\modules\antagonists\ashwalker\ashwalker.dm"
@@ -10093,7 +10089,6 @@
 #include "modular_zzplurt\code\modules\admin\playtimes.dm"
 #include "modular_zzplurt\code\modules\admin\smites\skibidi.dm"
 #include "modular_zzplurt\code\modules\admin\smites\tabletide.dm"
-#include "modular_zzplurt\code\modules\alternative_job_titles\code\alt_job_titles.dm"
 #include "modular_zzplurt\code\modules\antagonists\malf\ai_module.dm"
 #include "modular_zzplurt\code\modules\antagonists\malf\infected_ipc.dm"
 #include "modular_zzplurt\code\modules\ashwalkers\code\clothing\ash_armour.dm"
@@ -10483,3 +10478,6 @@
 #include "modular_zzplurt\code\modules\wiremod\core\integrated_circuit.dm"
 #include "modular_zzplurt\maps\offstation\seedvault.dm"
 // END_INCLUDE
+
+/// ADD ANDROMEDA-13
+#include "modular_andromeda\andromeda.dme"

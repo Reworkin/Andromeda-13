@@ -7,17 +7,17 @@
 /datum/loadout_item/mask/gas/german
 	name = "Black Gas Mask"
 	item_path = /obj/item/clothing/mask/gas/german
-	restricted_roles = list(ALL_JOBS_SEC,)
+	restricted_roles = list(ALL_JOBS_SEC)
 
 /datum/loadout_item/mask/gas/soviet
 	name = "Soviet Gas Mask"
 	item_path = /obj/item/clothing/mask/gas/soviet
-	restricted_roles = list(ALL_JOBS_SEC,)
+	restricted_roles = list(ALL_JOBS_SEC)
 
 /datum/loadout_item/mask/gas/nri_police
 	name = "Colonial Gas Mask"
 	item_path = /obj/item/clothing/mask/gas/nri_police
-	restricted_roles = list(ALL_JOBS_SEC, JOB_CUSTOMS_AGENT)
+	restricted_roles = list(ALL_JOBS_SEC)
 
 /datum/loadout_item/mask/frontier_colonist
 	name = "Frontier Gas Mask"

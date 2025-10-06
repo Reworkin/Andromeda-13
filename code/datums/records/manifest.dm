@@ -45,7 +45,7 @@ GLOBAL_DATUM_INIT(manifest, /datum/manifest, new)
 				"trim" = trim,
 				)
 			continue
-		for(var/department_type in job.departments_list)
+		for(var/department_type as anything in job.departments_list)
 			//Jobs under multiple departments should only be displayed if this is their first department or the command department
 			if(job.departments_list[1] != department_type && !(job.departments_bitflags & DEPARTMENT_BITFLAG_COMMAND))
 				continue
@@ -121,11 +121,6 @@ GLOBAL_DATUM_INIT(manifest, /datum/manifest, new)
 	var/datum/dna/stored/record_dna = new()
 	person.dna.copy_dna(record_dna)
 
-	// SKYRAT EDIT ADDITION BEGIN - ALTERNATIVE_JOB_TITLES
-	// The alt job title, if user picked one, or the default
-	var/chosen_assignment = id_card?.get_job_title() || assignment //BUBBER EDIT: Intern Job Tags
-	// SKYRAT EDIT ADDITION END - ALTERNATIVE_JOB_TITLES
-
 	var/datum/record/locked/lockfile = new(
 		age = person.age,
 		chrono_age = person.chrono_age, // SKYRAT EDIT ADDITION - Chronological age
@@ -136,7 +131,7 @@ GLOBAL_DATUM_INIT(manifest, /datum/manifest, new)
 		gender = person_gender,
 		initial_rank = assignment,
 		name = person.real_name,
-		rank = chosen_assignment, // SKYRAT EDIT - Alt job titles - ORIGINAL: rank = assignment,
+		rank = assignment,
 		species = record_dna.species.name,
 		trim = assignment,
 		// Locked specifics
@@ -157,7 +152,7 @@ GLOBAL_DATUM_INIT(manifest, /datum/manifest, new)
 		gender = person_gender,
 		initial_rank = assignment,
 		name = person.real_name,
-		rank = chosen_assignment, // SKYRAT EDIT - Alt job titles - ORIGINAL: rank = assignment,
+		rank = assignment,
 		species = record_dna.species.name,
 		trim = assignment,
 		// Crew specific

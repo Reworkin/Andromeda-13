@@ -177,7 +177,7 @@ Temporary Items
 *.sublime-workspace
 
 #Visual studio stuff
-*.vscode/*
+# *.vscode/*
 
 # Cursor stuff
 *.cursor/*

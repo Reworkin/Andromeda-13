@@ -223,6 +223,15 @@ instrumental = "стеной шаттла"
 prepositional = "стене шаттла"
 gender = "female"
 
+["shuttle wall"]
+nominative = "стена шаттла"
+genitive = "стены шаттла"
+dative = "стене шаттла"
+accusative = "стену шаттла"
+instrumental = "стеной шаттла"
+prepositional = "стене шаттла"
+gender = "female"
+
 ["rock"]
 nominative = "камень"
 genitive = "камня"

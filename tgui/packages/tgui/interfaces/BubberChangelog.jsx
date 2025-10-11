@@ -280,7 +280,7 @@ const SplurtChangelogEntry = (props) => {
     <Stack.Item mb={-1} pb={1} key={author}>
       <Box>
         <h4>
-          <Image verticalAlign="bottom" src={resolveAsset('splurt_16.png')} />{' '}
+          <Image verticalAlign="bottom" src={resolveAsset('a13_16.png')} />{' '}
           {author} changed:
         </h4>
       </Box>

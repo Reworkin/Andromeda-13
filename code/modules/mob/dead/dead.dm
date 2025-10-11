@@ -19,11 +19,11 @@ INITIALIZE_IMMEDIATE(/mob/dead)
 
 	prepare_huds()
 
-	if(length(CONFIG_GET(keyed_list/cross_server)))
-		add_verb(src, /mob/dead/proc/server_hop)
-	set_focus(src)
-	become_hearing_sensitive()
-	log_mob_tag("TAG: [tag] CREATED: [key_name(src)] \[[src.type]\]")
+//	if(length(CONFIG_GET(keyed_list/cross_server)))
+//		add_verb(src, /mob/dead/proc/server_hop)
+//	set_focus(src)
+//	become_hearing_sensitive()
+//	log_mob_tag("TAG: [tag] CREATED: [key_name(src)] \[[src.type]\]")
 	return INITIALIZE_HINT_NORMAL
 
 /mob/dead/canUseStorage()
@@ -35,17 +35,18 @@ INITIALIZE_IMMEDIATE(/mob/dead)
 		return
 	var/time_remaining = SSticker.GetTimeLeft()
 	if(time_remaining > 0)
-		. += "Time To Start: [round(time_remaining/10)]s"
+		. += "До начала раунда: [round(time_remaining/10)]с"
 	else if(time_remaining == -10)
-		. += "Time To Start: DELAYED"
+		. += "До начала раунда: ОТЛОЖЕНО"
 	else
-		. += "Time To Start: SOON"
+		. += "До начала раунда: СКОРО"
 
-	. += "Players: [LAZYLEN(GLOB.clients)]"
-	. += "Players Ready: [SSticker.totalPlayersReady]"
+	. += "Игроков: [LAZYLEN(GLOB.clients)]"
+	. += "Игроков готово: [SSticker.totalPlayersReady]"
 	if(client.holder)
-		. += "Admins Ready: [SSticker.total_admins_ready] / [length(GLOB.admins)]" // BUBBER ADDITION END - /tg/ removed this in #90572, but we still use a custom lobby screen
+		. += "Админов готово: [SSticker.total_admins_ready] / [length(GLOB.admins)]" // BUBBER ADDITION END - /tg/ removed this in #90572, but we still use a custom lobby screen
 
+/**
 #define SERVER_HOPPER_TRAIT "server_hopper"
 
 /mob/dead/proc/server_hop()
@@ -91,6 +92,7 @@ INITIALIZE_IMMEDIATE(/mob/dead)
 	hopper << link("[addr]")
 
 #undef SERVER_HOPPER_TRAIT
+ */
 
 /**
  * updates the Z level for dead players

@@ -129,8 +129,9 @@
 		if(gen_turf.turf_flags & NO_RUINS)
 			new_turf.turf_flags |= NO_RUINS
 
-	var/message = "[name] terrain generation finished in [(REALTIMEOFDAY - start_time)/10]s!"
-	to_chat(world, span_boldannounce("[message]"), MESSAGE_TYPE_DEBUG)
+	var/message = "Генерация территории [name] завершена за [(REALTIMEOFDAY - start_time)/10]с!"
+	add_startup_message("[message]")
+//	to_chat(world, span_boldannounce("[message]"), MESSAGE_TYPE_DEBUG)
 	log_world(message)
 
 
@@ -299,7 +300,7 @@
 				spawned_something = TRUE
 		CHECK_TICK
 
-	var/message = "[name] terrain population finished in [(REALTIMEOFDAY - start_time)/10]s!"
+	var/message = "[name] заселение местности завершено за [(REALTIMEOFDAY - start_time)/10]с!"
 	add_startup_message(message) //SKYRAT EDIT CHANGE
 	//to_chat(world, span_boldannounce("[message]"), MESSAGE_TYPE_DEBUG) //SKYRAT EDIT ORIGINAL
 	log_world(message)
@@ -323,7 +324,7 @@
 
 	// No sense in doing anything here if nothing is allowed anyway.
 	if(!flora_allowed && !features_allowed && !fauna_allowed)
-		var/message = "[name] terrain population finished in [(REALTIMEOFDAY - start_time)/10]s!"
+		var/message = "[name] заселение местности завершено за [(REALTIMEOFDAY - start_time)/10]с!"
 		to_chat(world, span_boldannounce("[message]"), MESSAGE_TYPE_DEBUG)
 		log_world(message)
 		return
@@ -334,7 +335,7 @@
 
 		CHECK_TICK
 
-	var/message = "[name] terrain population finished in [(REALTIMEOFDAY - start_time)/10]s!"
+	var/message = "[name] заселение местности завершено за [(REALTIMEOFDAY - start_time)/10]с!"
 	to_chat(world, span_boldannounce("[message]"), MESSAGE_TYPE_DEBUG)
 	log_world(message)
 

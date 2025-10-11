@@ -334,7 +334,7 @@ ADMIN_VERB(cmd_controller_view_ui, R_SERVER|R_DEBUG, "Controller Overview", "Vie
 	init_stage_completed = 0
 	var/mc_started = FALSE
 
-	add_startup_message("Initializing subsystems...") //SKYRAT EDIT CHANGE - Custom HTML Lobby Screen
+	add_startup_message("Инициализация подсистем... Протираем пролитое пиво Ревокина.") //SKYRAT EDIT CHANGE - Custom HTML Lobby Screen
 	// to_chat(world, span_boldannounce("Initializing subsystems..."), MESSAGE_TYPE_DEBUG) SKYRAT EDIT ORIGINAL
 
 	var/list/stage_sorted_subsystems = new(INITSTAGE_MAX)
@@ -452,14 +452,14 @@ ADMIN_VERB(cmd_controller_view_ui, R_SERVER|R_DEBUG, "Controller Overview", "Vie
 				SetRunLevel(1) // Intentionally not using the defines here because the MC doesn't care about them
 			// Loop.
 			Master.StartProcessing(0)
-			add_startup_message("Clearing clutter...") //SKYRAT EDIT ADDITION
+			add_startup_message("Устранение говнокода Ревокина...") //SKYRAT EDIT ADDITION
 
 
 	var/time = (REALTIMEOFDAY - start_timeofday) / 10
 
 
 
-	var/msg = "Initializations complete within [time] second[time == 1 ? "" : "s"]!"
+	var/msg = "Инициализация завершена за [time] секунд[time == 1 ? "у" : (time >= 2 && time <=4 ? "ы" : "")]!"
 	to_chat(world, span_boldannounce("[msg]"), MESSAGE_TYPE_DEBUG)
 	log_world(msg)
 
@@ -538,19 +538,19 @@ ADMIN_VERB(cmd_controller_view_ui, R_SERVER|R_DEBUG, "Controller Overview", "Vie
 
 	switch(result)
 		if(SS_INIT_FAILURE)
-			message_prefix = "Failed to initialize [subsystem.name] subsystem after"
+			message_prefix = "Не удалось инициализировать подсистему [subsystem.name] за"
 			chat_warning = TRUE
 		if(SS_INIT_SUCCESS, SS_INIT_NO_MESSAGE)
-			message_prefix = "Initialized [subsystem.name] subsystem within"
+			message_prefix = "Подсистема [subsystem.name] инициализирована за"
 		if(SS_INIT_NO_NEED)
 			// This SS is disabled or is otherwise shy.
 			return
 		else
 			// SS_INIT_NONE or an invalid value.
-			message_prefix = "Initialized [subsystem.name] subsystem with errors within"
+			message_prefix = "Подсистема [subsystem.name] инициализирована с ошибками за"
 			chat_warning = TRUE
 
-	var/message = "[message_prefix] [seconds] second[seconds == 1 ? "" : "s"]!"
+	var/message = "[message_prefix] [seconds] секунд[seconds == 1 ? "у" : "ы"]!"
 	// SKYRAT EDIT REMOVAL BEGIN -- chat_message not used anymore due to change below
 	// var/chat_message = chat_warning ? span_boldwarning(message) : span_boldannounce(message)
 	// SKYRAT EDIT REMOVAL END

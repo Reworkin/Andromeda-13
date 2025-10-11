@@ -106,14 +106,14 @@ export const Panel = (props) => {
             <Notifications>
               {game.connectionLostAt && (
                 <Notifications.Item rightSlot={<ReconnectButton />}>
-                  You are either AFK, experiencing lag or the connection has
-                  closed.
+                  Вы либо АФК, испытываете лаги, либо соединение
+                  было разорвано.
                 </Notifications.Item>
               )}
               {game.roundRestartedAt && (
                 <Notifications.Item>
-                  The connection has been closed because the server is
-                  restarting. Please wait while you automatically reconnect.
+                  Соединение было разорвано из-за перезапуска сервера.
+                  Пожалуйста, подождите, пока автоматическое переподключение не будет завершено.
                 </Notifications.Item>
               )}
             </Notifications>

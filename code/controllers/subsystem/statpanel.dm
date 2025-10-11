@@ -25,15 +25,15 @@ SUBSYSTEM_DEF(statpanels)
 		if(isnull(SSmapping.current_map))
 			global_data = list("Loading")
 		else if(SSmapping.current_map.feedback_link)
-			global_data = list(list("Map: [SSmapping.current_map.map_name]", " (Feedback)", "action=openLink&link=[SSmapping.current_map.feedback_link]"))
+			global_data = list(list("Карта: [SSmapping.current_map.map_name]", " (Feedback)", "action=openLink&link=[SSmapping.current_map.feedback_link]"))
 		else
-			global_data = list("Map: [SSmapping.current_map?.map_name]")
+			global_data = list("Карта: [SSmapping.current_map?.map_name]")
 
 		if(SSmapping.current_map?.mapping_url)
 			global_data += list(list("same_line", " | (View in Browser)", "action=openWebMap"))
 
 		if(cached)
-			global_data += "Next Map: [cached.map_name]"
+			global_data += "Следующая карта: [cached.map_name]"
 
 		// BUBBER EDIT ADDITION BEGIN - Extra stat panel info
 		var/real_round_time = world.timeofday - SSticker.real_round_start_time
@@ -43,15 +43,15 @@ SUBSYSTEM_DEF(statpanels)
 		// BUBBER EDIT ADDITION END - Extra stat panel info
 
 		global_data += list(
-			"Round ID: [GLOB.round_id ? GLOB.round_id : "NULL"]",
-			"Connected: [GLOB.clients.len] | Active: [active_players]/[CONFIG_GET(number/hard_popcap)] | Observing: [observing_players]", // BUBBER EDIT ADDITION - Extra stat panel info
-			"OOC: [GLOB.ooc_allowed ? "Enabled" : "Disabled"]", // BUBBER EDIT ADDITION - Extra stat panel info
+			"Раунд ID: [GLOB.round_id ? GLOB.round_id : "NULL"]",
+			"Подключено: [GLOB.clients.len] | Активны: [active_players] | Наблюдают: [observing_players]", // BUBBER EDIT ADDITION - Extra stat panel info
+			"OOC: [GLOB.ooc_allowed ? "Включён" : "Отключён"]", // BUBBER EDIT ADDITION - Extra stat panel info
 			" ", // BUBBER EDIT ADDITION - Extra stat panel info
-			"Storyteller: [SSgamemode.storyteller ? SSgamemode.storyteller.name : "N/A"]", // BUBBER EDIT ADDITION - Extra stat panel info
-			"Station Time: [station_time_timestamp(format = "hh:mm")], [current_date]", // BUBBER EDIT CHANGE - Extra stat panel info - ORIGINAL: "Station Time: [station_time_timestamp()]"
-			"Round Time: [time2text(real_round_time, "hh:mm:ss", 0)]", // BUBBER EDIT CHANGE - Extra stat panel info - ORIGINAL: "Round Time: [ROUND_TIME()]"
-			"Server Time: [time2text(world.timeofday, "YYYY-MM-DD hh:mm:ss", world.timezone)]",
-			"Time Dilation: [round(SStime_track.time_dilation_current,1)]% AVG:([round(SStime_track.time_dilation_avg_fast,1)]%, [round(SStime_track.time_dilation_avg,1)]%, [round(SStime_track.time_dilation_avg_slow,1)]%)",
+			"Режим: [SSgamemode.storyteller ? SSgamemode.storyteller.name : "Неизвестно"]", // BUBBER EDIT ADDITION - Extra stat panel info
+			"Станционное время: [station_time_timestamp(format = "hh:mm")], [current_date]", // BUBBER EDIT CHANGE - Extra stat panel info - ORIGINAL: "Station Time: [station_time_timestamp()]"
+			"Время от начала раунда: [time2text(real_round_time, "hh:mm:ss", 0)]", // BUBBER EDIT CHANGE - Extra stat panel info - ORIGINAL: "Round Time: [ROUND_TIME()]"
+			"Серверное (Хостинг) время: [time2text(world.timeofday, "YYYY-MM-DD hh:mm:ss", world.timezone)]",
+			"Замедление времени: [round(SStime_track.time_dilation_current,1)]% В среднем:([round(SStime_track.time_dilation_avg_fast,1)]%, [round(SStime_track.time_dilation_avg,1)]%, [round(SStime_track.time_dilation_avg_slow,1)]%)",
 		)
 
 		if(SSshuttle.emergency)
@@ -62,10 +62,10 @@ SUBSYSTEM_DEF(statpanels)
 		if(SSticker.reboot_timer)
 			var/reboot_time = timeleft(SSticker.reboot_timer)
 			if(reboot_time)
-				global_data += "Reboot: [DisplayTimeText(reboot_time, 1)]"
+				global_data += "Перезапуск: [DisplayTimeText(reboot_time, 1)]"
 		// admin must have delayed round end
 		else if(SSticker.ready_for_reboot)
-			global_data += "Reboot: DELAYED"
+			global_data += "Перезапуск: ОТЛОЖЕН"
 
 		src.currentrun = GLOB.clients.Copy()
 		mc_data = null
@@ -135,7 +135,7 @@ SUBSYSTEM_DEF(statpanels)
 		return
 	target.stat_panel.send_message("update_stat", list(
 		"global_data" = global_data,
-		"ping_str" = "Ping: [round(target.lastping, 1)]ms (Average: [round(target.avgping, 1)]ms)",
+		"ping_str" = "Пинг: [round(target.lastping, 1)]мс (В среднем: [round(target.avgping, 1)]мс)",
 		"other_str" = target.mob?.get_status_tab_items(),
 	))
 

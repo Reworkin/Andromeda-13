@@ -727,7 +727,7 @@ SUBSYSTEM_DEF(gamemode)
 		vote_message += "[storyboy.desc]"
 		vote_message += ""
 	var/finalized_message = "[vote_message.Join("\n")]"
-	to_chat(world, vote_font(fieldset_block("Storyteller Vote", "[finalized_message]", "boxed_message purple_box")))
+	to_chat(world, vote_font(fieldset_block("Режим игры", "[finalized_message]", "boxed_message purple_box")))
 	return choices
 
 /datum/controller/subsystem/gamemode/proc/storyteller_vote_result(winner_name)

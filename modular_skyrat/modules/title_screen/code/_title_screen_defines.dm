@@ -1,7 +1,7 @@
 #define DEFAULT_TITLE_MAP_LOADTIME (150 SECONDS)
 
-#define DEFAULT_TITLE_SCREEN_IMAGE 'modular_zzplurt/icons/UI_Icons/title_screen/splurt_banner_background.png' // SPLURT EDIT START: TITLE SCREEN - old value: 'modular_skyrat/modules/title_screen/icons/skyrat_title_screen.png'
-#define DEFAULT_TITLE_LOADING_SCREEN 'modular_skyrat/modules/title_screen/icons/loading_screen.gif'
+#define DEFAULT_TITLE_SCREEN_IMAGE 'modular_andromeda/icons/andromeda.png'
+#define DEFAULT_TITLE_LOADING_SCREEN 'modular_andromeda/icons/clown.gif'
 
 #define TITLE_PROGRESS_CACHE_FILE "data/progress_cache.json"
 #define TITLE_PROGRESS_CACHE_VERSION "2"

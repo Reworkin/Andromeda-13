@@ -23,7 +23,7 @@
 
 /datum/vote/storyteller/initiate_vote(initiator, duration)
 	. = ..()
-	to_chat(world, vote_font(fieldset_block("Storyteller Vote", "[span_vote_notice("Only players who are ready and joining the game round start will be calculated in voting results.")]", "boxed_message purple_box")))
+	to_chat(world, vote_font(fieldset_block("Режим игры", "[span_vote_notice("Only players who are ready and joining the game round start will be calculated in voting results.")]", "boxed_message purple_box")))
 
 /datum/vote/storyteller/return_desc(vote_name)
 	return SSgamemode.storyteller_desc(vote_name)
@@ -32,7 +32,7 @@
 	if(!ready_only)
 		return ..()
 
-	return fieldset_block("Storyteller Vote", "Storyteller voting is now closed! Storyteller will be determined when the round starts.", "boxed_message purple_box")
+	return fieldset_block("Режим игры", "Storyteller voting is now closed! Storyteller will be determined when the round starts.", "boxed_message purple_box")
 
 /datum/vote/storyteller/create_vote()
 	. = ..()

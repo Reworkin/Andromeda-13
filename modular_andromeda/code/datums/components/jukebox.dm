@@ -1,4 +1,7 @@
-/*// Reasons for appling STATUS_MUTE to a mob's sound status
+/// Checks if the mob has jukebox muted in their preferences
+#define IS_PREF_MUTED(listener) (listener.client?.prefs.read_preference(/datum/preference/numeric/volume/sound_jukebox))
+
+// Reasons for appling STATUS_MUTE to a mob's sound status
 /// The mob is deaf
 #define MUTE_DEAF (1<<0)
 /// The mob has disabled jukeboxes in their preferences
@@ -17,6 +20,7 @@
 	/// List of /datum/tracks we can play. Set via get_songs().
 	VAR_FINAL/list/songs = list()
 	/// Current song track selected
+	VAR_FINAL/list/queuedplaylist_songnames = list()
 	VAR_FINAL/datum/track/selection
 	/// Current song datum playing
 	VAR_FINAL/sound/active_song_sound
@@ -29,6 +33,7 @@
 	/// Volume of the songs played. Also serves as the max volume.
 	/// Do not set directly, use set_new_volume() instead.
 	VAR_PROTECTED/volume = 50
+	VAR_PROTECTED/max_volume = 100
 
 	/// Range at which the sound plays to players, can also be a view "XxY" string
 	VAR_PROTECTED/sound_range
@@ -39,6 +44,8 @@
 	/// Whether the music loops when done.
 	/// If FALSE, you must handle ending music yourself.
 	var/sound_loops = FALSE
+	var/stop_time = 0
+	var/active = FALSE
 
 /datum/jukebox/New(atom/new_parent)
 	if(!ismovable(new_parent) && !isturf(new_parent))
@@ -59,12 +66,17 @@
 		AddComponent(/datum/component/connect_range, parent, connections, max(x_cutoff, z_cutoff))
 
 	songs = init_songs()
-	if(length(songs))
-		selection = songs[pick(songs)]
+	/* if(length(songs)) //Добавляем по умолчанию один рандомный трек в очередь.
+		var/datum/track/t = songs[pick(songs)]
+		queuedplaylist_songnames += t.song_name */
+
 
 	RegisterSignal(parent, COMSIG_ENTER_AREA, PROC_REF(on_enter_area))
 	RegisterSignal(parent, COMSIG_MOVABLE_MOVED, PROC_REF(on_moved))
 	RegisterSignal(parent, COMSIG_QDELETING, PROC_REF(parent_delete))
+
+	RegisterSignal(parent, COMSIG_ITEM_STORED, PROC_REF(on_stored))
+	RegisterSignal(parent, COMSIG_ITEM_UNSTORED, PROC_REF(on_unstored))
 
 /datum/jukebox/Destroy()
 	unlisten_all()
@@ -100,11 +112,13 @@
 			var/datum/track/new_track = new()
 			new_track.song_path = file("[global.config.directory]/jukebox_music/sounds/[track_file]")
 			var/list/track_data = splittext(track_file, "+")
-			if(length(track_data) < 3)
+			if(length(track_data) != 4)
 				continue
 			new_track.song_name = track_data[1]
 			new_track.song_length = text2num(track_data[2])
 			new_track.song_beat = text2num(track_data[3])
+			new_track.song_track_id = text2num(track_data[4])
+			new_track.song_modified_date = time2text(ftime(new_track.song_path), "DD.MM.YYYY")
 			config_songs[new_track.song_name] = new_track
 
 		if(!length(config_songs))
@@ -114,6 +128,20 @@
 	// returns a copy so it can mutate if desired.
 	return config_songs.Copy()
 
+/datum/jukebox/proc/get_songs()
+	var/list/songs_data = list()
+	for(var/song_name in songs)
+		var/datum/track/one_song = songs[song_name]
+		UNTYPED_LIST_ADD(songs_data, list( \
+			"name" = song_name, \
+			"length" = DisplayTimeText(one_song.song_length), \
+			"beat" = one_song.song_beat, \
+			"modified_date" = one_song.song_modified_date, \
+			"track_id" = one_song.song_track_id
+		))
+
+	return songs_data
+
 /**
  * Returns a set of general data relating to the jukebox for use in TGUI.
  *
@@ -122,20 +150,17 @@
  */
 /datum/jukebox/proc/get_ui_data()
 	var/list/data = list()
-	var/list/songs_data = list()
-	for(var/song_name in songs)
-		var/datum/track/one_song = songs[song_name]
-		UNTYPED_LIST_ADD(songs_data, list( \
-			"name" = song_name, \
-			"length" = DisplayTimeText(one_song.song_length), \
-			"beat" = one_song.song_beat, \
-		))
-
 	data["active"] = !!active_song_sound
-	data["songs"] = songs_data
-	data["track_selected"] = selection?.song_name
-	data["looping"] = sound_loops
+	data["songs"] = get_songs()
+	// TODO
+	data["queued_tracks"] = queuedplaylist_songnames
+	data["track_selected"] = null
+	data["track_length"] = null
+	if(selection)
+		data["track_selected"] = selection.song_name
+		data["track_length"] = DisplayTimeText(selection.song_length)
 	data["volume"] = volume
+	data["repeat"] = sound_loops
 	return data
 
 /**
@@ -156,7 +181,7 @@
  * Then updates any mobs listening to it.
  */
 /datum/jukebox/proc/set_new_volume(new_vol)
-	new_vol = clamp(new_vol, 0, initial(volume))
+	new_vol = clamp(new_vol, 0, max_volume)
 	if(volume == new_vol)
 		return
 	volume = new_vol
@@ -167,7 +192,7 @@
 
 /// Sets volume to the maximum possible value, the initial volume value.
 /datum/jukebox/proc/set_volume_to_max()
-	set_new_volume(initial(volume))
+	set_new_volume(max_volume)
 
 /**
  * Sets the sound's environment to a new value.
@@ -192,7 +217,7 @@
 
 /// Helper to kickstart the music for all mobs in hearing range of the jukebox.
 /datum/jukebox/proc/start_music()
-	for(var/mob/nearby in hearers(sound_range, parent))
+	for(var/mob/nearby in hearers(sound_range, parent.loc))
 		register_listener(nearby)
 
 /// Helper to get all mobs currently, ACTIVELY listening to the jukebox.
@@ -215,8 +240,9 @@
 		RegisterSignal(new_listener, COMSIG_MOB_LOGIN, PROC_REF(listener_login))
 		return
 
-	RegisterSignals(new_listener, list(COMSIG_MOVABLE_MOVED, COMSIG_MOB_JUKEBOX_PREFERENCE_APPLIED), PROC_REF(listener_moved))
+	RegisterSignal(new_listener, COMSIG_MOVABLE_MOVED, PROC_REF(listener_moved))
 	RegisterSignals(new_listener, list(SIGNAL_ADDTRAIT(TRAIT_DEAF), SIGNAL_REMOVETRAIT(TRAIT_DEAF)), PROC_REF(listener_deaf))
+
 	var/pref_volume = new_listener.client?.prefs.read_preference(/datum/preference/numeric/volume/sound_jukebox)
 	if(HAS_TRAIT(new_listener, TRAIT_DEAF) || !pref_volume)
 		listeners[new_listener] |= SOUND_MUTE
@@ -280,6 +306,7 @@
 
 	if((reason & MUTE_DEAF) && HAS_TRAIT(listener, TRAIT_DEAF))
 		return FALSE
+
 	var/pref_volume = listener.client?.prefs.read_preference(/datum/preference/numeric/volume/sound_jukebox)
 	if((reason & MUTE_PREF) && !pref_volume)
 		return FALSE
@@ -309,7 +336,6 @@
 		COMSIG_MOB_LOGIN,
 		COMSIG_QDELETING,
 		COMSIG_MOVABLE_MOVED,
-		COMSIG_MOB_JUKEBOX_PREFERENCE_APPLIED,
 		SIGNAL_ADDTRAIT(TRAIT_DEAF),
 		SIGNAL_REMOVETRAIT(TRAIT_DEAF),
 	))
@@ -318,7 +344,10 @@
 /datum/jukebox/proc/update_listener(mob/listener)
 	PROTECTED_PROC(TRUE)
 
-	active_song_sound.status = listeners[listener] || NONE
+	if(isnull(active_song_sound))
+		return
+
+	active_song_sound?.status = listeners[listener] || NONE
 
 	var/turf/sound_turf = get_turf(parent)
 	var/turf/listener_turf = get_turf(listener)
@@ -385,6 +414,25 @@
 /datum/jukebox/single_mob/start_music(mob/solo_listener)
 	register_listener(solo_listener)
 
+/datum/jukebox/proc/check_storage_state()
+	if(istype(parent, /obj/item) && (parent:item_flags & IN_STORAGE))
+		unlisten_all()
+		active = FALSE
+	else
+		if(selection && !active)
+			start_music()
+			active = TRUE
+
+/datum/jukebox/proc/on_stored(datum/source, datum/storage/storage)
+	SIGNAL_HANDLER
+	check_storage_state()
+
+/datum/jukebox/proc/on_unstored(datum/source, datum/storage/storage)
+	SIGNAL_HANDLER
+	check_storage_state()
+
+#undef IS_PREF_MUTED
+
 #undef MUTE_DEAF
 #undef MUTE_PREF
 #undef MUTE_RANGE
@@ -400,6 +448,8 @@
 	/// How long is a beat of the song in decisconds
 	/// Used to determine time between effects when played
 	var/song_beat = 0
+	var/song_track_id = null
+	var/song_modified_date = null
 
 // Default track supplied for testing and also because it's a banger
 /datum/track/default
@@ -407,4 +457,3 @@
 	song_name = "Tintin on the Moon"
 	song_length = 3 MINUTES + 52 SECONDS
 	song_beat = 1 SECONDS
-*/

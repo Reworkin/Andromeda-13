@@ -1,0 +1,45 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><base href="../"><link rel="stylesheet" href="dmdoc.css"><title>/mob/dead - /tg/ Station 13</title></head><body><header><a href="index.html">/tg/ Station 13</a> - <a href="index.html#modules">Modules</a> - <a href="index.html#types">Types</a> — <a href="mob/dead.html#proc">Proc Details</a></header><main><h1>dead <aside>/<a href="mob.html">mob</a>/<a href="mob/dead.html">dead</a></aside> <a href="https://github.com/Reworkin/Andromeda-13/blob/749127b9078fdfe0d763bc1350ea7640de0ed33d/code/modules/mob/dead/dead.dm#L5"><img src="git.png" width="16" height="16" title="code/modules/mob/dead/dead.dm 5"></a></h1><table class="summary" cellspacing="0"><tr><td colspan="2"><h2>Procs</h2></td></tr><tr><th><a href="mob/dead.html#proc/update_z">update_z</a></th><td>#define SERVER_HOPPER_TRAIT &quot;server_hopper&quot;</td></tr></table><h2 id="proc">Proc Details</h2><h3 id="proc/update_z"><aside class="declaration">proc </aside>update_z<aside>(new_z)  <a href="https://github.com/Reworkin/Andromeda-13/blob/749127b9078fdfe0d763bc1350ea7640de0ed33d/code/modules/mob/dead/dead.dm#L101"><img src="git.png" width="16" height="16" title="code/modules/mob/dead/dead.dm 101"></a></aside></h3><p>#define SERVER_HOPPER_TRAIT &quot;server_hopper&quot;</p>
+<p>/mob/dead/proc/server_hop()
+set category = &quot;OOC&quot;
+set name = &quot;Server Hop&quot;
+set desc= &quot;Jump to the other server&quot;
+if(HAS_TRAIT(src, TRAIT_NO_TRANSFORM)) // in case the round is ending and a cinematic is already playing we don't wanna clash with that (yes i know)
+return
+var/list/our_id = CONFIG_GET(string/cross_comms_name)
+var/list/csa = CONFIG_GET(keyed_list/cross_server) - our_id
+var/pick
+switch(length(csa))
+if(0)
+remove_verb(src, /mob/dead/proc/server_hop)
+to_chat(src, span_notice(&quot;Server Hop has been disabled.&quot;))
+if(1)
+pick = csa[1]
+else
+pick = tgui_input_list(src, &quot;Server to jump to&quot;, &quot;Server Hop&quot;, csa)</p>
+<pre><code>if(isnull(pick))
+	return
+
+var/addr = csa[pick]
+
+if(tgui_alert(usr, &quot;Jump to server [pick] ([addr])?&quot;, &quot;Server Hop&quot;, list(&quot;Yes&quot;, &quot;No&quot;)) != &quot;Yes&quot;)
+	return
+
+var/client/hopper = client
+to_chat(hopper, span_notice(&quot;Sending you to [pick].&quot;))
+var/atom/movable/screen/splash/fade_in = new(null, null, hopper, FALSE)
+fade_in.fade(FALSE)
+
+ADD_TRAIT(src, TRAIT_NO_TRANSFORM, SERVER_HOPPER_TRAIT)
+sleep(2.9 SECONDS) //let the animation play
+REMOVE_TRAIT(src, TRAIT_NO_TRANSFORM, SERVER_HOPPER_TRAIT)
+
+if(!hopper)
+	return
+
+winset(src, null, &quot;command=.options&quot;) //other wise the user never knows if byond is downloading resources
+
+hopper &lt;&lt; link(&quot;[addr]&quot;)
+</code></pre>
+<p>#undef SERVER_HOPPER_TRAIT</p>
+<p>updates the Z level for dead players
+If they don't have a new z, we'll keep the old one, preventing bugs from ghosting and re-entering, among others</p></main><footer>tgstation.dme <a href="https://github.com/Reworkin/Andromeda-13/tree/749127b9078fdfe0d763bc1350ea7640de0ed33d">749127b</a> (main) — <a href="https://github.com/SpaceManiac/SpacemanDMM/blob/master/crates/dmdoc/README.md">dmdoc 1.11.0</a></footer></body></html>
